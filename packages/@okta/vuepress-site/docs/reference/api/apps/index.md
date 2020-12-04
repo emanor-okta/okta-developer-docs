@@ -998,7 +998,7 @@ Adds a SAML 2.0 application. This application is only available to the org that 
 | subjectNameIdFormat   | Identifies the SAML processing rules                                                                             | String                                               | FALSE    | FALSE  |                                           |
 | subjectNameIdTemplate | Template for app user's username when a user is assigned to the app                                              | String                                               | FALSE    | FALSE  |                                           |
 
-* You can't update the application's Assertion Encryption configuration through the API. Use the Administrator Console.
+* You can't update the application's Assertion Encryption configuration through the API. Use the Admin Console.
 * Either (or both) `responseSigned` or `assertionSigned` must be `TRUE`.
 * The override settings `ssoAcsUrlOverride`, `recipientOverride`, `destinationOverride`, and `audienceOverride` provide an alternative way of persisting post back and similar other URLs.
     For example, you can use `ssoAcsUrlOverride` that supports the cloud access security broker (CASB) use case for Office365 app instances.
