@@ -991,14 +991,14 @@ Adds a SAML 2.0 application. This application is only available to the org that 
 | requestCompressed     | Determines whether the SAML request is expected to be compressed or not                                           | Boolean                                              | FALSE    | FALSE  |                                           |
 | responseSigned        | Determines whether the SAML authentication response message is digitally signed by the IDP or not                 | Boolean                                              | FALSE    | FALSE  |                                           |
 | signatureAlgorithm    | Determines the signing algorithm used to digitally sign the SAML assertion and response                           | String                                               | FALSE    | FALSE  |                                           |
-| slo                   | Determines if the application supports Single Logout.                                                             | [Single Logout](#single-logout-object)               | TRUE     | FALSE  |
+| slo                   | Determines if the application supports Single Logout                                                              | [Single Logout](#single-logout-object)               | TRUE     | FALSE  |
 | ssoAcsUrl             | Single Sign-On URL                                                                                                | String                                               | FALSE    | FALSE  | [URL](http://tools.ietf.org/html/rfc3986) |
 | ssoAcsUrlOverride     | Overrides the `ssoAcsUrl` setting                                                                                 | String                                               | TRUE     | FALSE  | [URL](http://tools.ietf.org/html/rfc3986) |
-| spCertificate         | The certificate that Okta will use to validate Single Logout (slo) requests                                       | [SP Certificate](#service-provider-certificate)      | TRUE     | FALSE  |
+| spCertificate         | The certificate that Okta uses to validate Single Logout (SLO) requests                                           | [SP Certificate](#service-provider-certificate)      | TRUE     | FALSE  |
 | subjectNameIdFormat   | Identifies the SAML processing rules                                                                             | String                                               | FALSE    | FALSE  |                                           |
 | subjectNameIdTemplate | Template for app user's username when a user is assigned to the app                                              | String                                               | FALSE    | FALSE  |                                           |
 
-* The application's Assertion Encryption configuration cannot be updated through the UI. It must be updated through the UI.
+* You can't update the application's Assertion Encryption configuration through the API. Use the Administrator Console.
 * Either (or both) `responseSigned` or `assertionSigned` must be `TRUE`.
 * The override settings `ssoAcsUrlOverride`, `recipientOverride`, `destinationOverride`, and `audienceOverride` provide an alternative way of persisting post back and similar other URLs.
     For example, you can use `ssoAcsUrlOverride` that supports the cloud access security broker (CASB) use case for Office365 app instances.
@@ -1008,7 +1008,7 @@ Adds a SAML 2.0 application. This application is only available to the org that 
     * In App Wizard SAML App, no override attributes are available.
 
 * If Single Logout is supported by the application and the `slo` object is provided in the request, the `spCertificate` object must be present.
-* When updating an application, if `slo` or `spCertificate` are not specified the existing configuration will persist.
+* When you update an application, if you don't specify `slo` or `spCertificate` the existing configuration persists.
 
 ##### Supported values for custom SAML app
 
@@ -1316,7 +1316,7 @@ Adds an OAuth 2.0 client application. This application is only available to the 
 | grant_types                                 | Array of OAuth 2.0 grant type strings                                                                                                                                                                                      | Array of `authorization_code`, `implicit`, `password`, `refresh_token`, `client_credentials`   | FALSE      | FALSE    | TRUE       |
 | initiate_login_uri                          | URL string that a third party can use to initiate a sign in by the client                                                                                                                                                    | String                                                                                         | TRUE       | FALSE    | TRUE       |
 | issuer_mode <ApiLifecycle access="ea" />    | Indicates whether the Okta Authorization Server uses the original Okta org domain URL or a custom domain URL as the issuer of ID token for this client. See [Details](#details). | `CUSTOM_URL` or `ORG_URL`                                                                      | TRUE       | FALSE    | TRUE       |
-| idp_initiated_login                         | The type of Idp-initiated login that the client supports, if any                                                                                                                 |  [Idp Iniated Login](#idp-initiated-login-object)                                                                     | TRUE       | FALSE    | TRUE       |
+| idp_initiated_login                         | The type of Idp-Initiated login that the client supports, if any                                                                                                                 |  [Idp-Initiated Login](#idp-initiated-login-object)                                                                     | TRUE       | FALSE    | TRUE       |
 | logo_uri                                    | URL string that references a logo for the client. This value is used with the client consent dialog box during the client consent flow. See [Details](#details).| URL                                                                                            | TRUE       | FALSE    | FALSE      |
 | policy_uri                                  | URL string of a web page providing the client's policy document                                                                                                                                                            | URL                                                                                            | TRUE       | FALSE    | FALSE      |
 | post_logout_redirect_uris                               | Array of redirection URI strings for relying party-initiated logouts                                                                                                                                                           | Array                                                                                          | TRUE       | FALSE    | FALSE       |
@@ -1367,19 +1367,19 @@ Adds an OAuth 2.0 client application. This application is only available to the 
   * The following properties can also be configured in the App Wizard and on the **General** tab in the Admin Console: `tos_uri`, `policy_uri`, and `logo_uri` and can be set using the [Dynamic Client Registration API](/docs/reference/api/oauth-clients/).
   * The `consent_method` property can be configured in the App Wizard and on the **General** tab in the Admin Console, but cannot be set using the Dynamic Client Registration API.
 
-### Idp Initiated Login object
+### Idp-Initiated Login object
 
-The Idp Initiated Login object is used to configure what, if any, Idp Initiated Login flows an OAuth Client supports.
+The Idp-Initiated Login object is used to configure what, if any, Idp-Initiated Login flows that an OAuth Client supports.
 
 | Property      | Description                                           | DataType                   | Nullable |
 | ------------- | ----------------------------------------------------- | -------------------------- | -------- | 
-| mode          | What mode to use for Idp Initiated Login              | `DISABLED`, `SPEC`, `OKTA` | FALSE    |
+| mode          | What mode to use for Idp-Initiated Login              | `DISABLED`, `SPEC`, `OKTA` | FALSE    |
 | default_scope | What scopes to use for the request when mode = `OKTA` | List of String             | TRUE     |
 
-* When `mode` is `DISABLED` the client does not support Idp-Initiated Login
-* When `mode` is `SPEC` the client will be redirected to the Relying Party's initiate_login_uri as defined in the [OpenId Connect spec](https://openid.net/specs/openid-connect-core-1_0.html#ThirdPartyInitiatedLogin)
-* When `mode` is `OKTA` the tokens will be directly sent to the Relying Party. This corresponds the "Okta Simplified" option in the Administrator Console.
-* The client must have an `initiate_login_uri` registered in order to configure any `mode` besides `DISABLED`
+* When `mode` is `DISABLED`, the client doesn't support Idp-Initiated Login
+* When `mode` is `SPEC`, the client is redirected to the Relying Party's `initiate_login_uri` as defined in the [OpenID Connect spec](https://openid.net/specs/openid-connect-core-1_0.html#ThirdPartyInitiatedLogin).
+* When `mode` is `OKTA`, the tokens are directly sent to the Relying Party. This corresponds the **Okta Simplified** option in the Administrator Console.
+* The client must have an `initiate_login_uri` registered to configure any `mode` besides `DISABLED`.
 
 ##### Request example
 
@@ -6003,13 +6003,13 @@ Specifies (optional) attribute statements for a SAML application
 
 ### Single Logout object
 
-Specifies the Single Logout (SLO)  behavior for a Custom SAML application
+Specifies the Single Logout (SLO) behavior for a Custom SAML application
 
-| Property  | Description                                                              | Datatype | Nullable | 
-| --------- | ------------------------------------------------------------------------ | -------- | -------- | 
-| enabled   | Whether or not the application supports SLO                              | Boolean  | FALSE    | 
-| issuer    | The issuer of the Service Provider generating the Single Logout request  | String   | TRUE     | 
-| logoutUrl | The location where the logout response is sent                           | String   | TRUE     |
+| Property  | Description                                                                  | Datatype | Nullable | 
+| --------- | ---------------------------------------------------------------------------- | -------- | -------- | 
+| enabled   | Whether the application supports SLO                                         | Boolean  | FALSE    | 
+| issuer    | The issuer of the Service Provider that generates the Single Logout request  | String   | TRUE     | 
+| logoutUrl | The location where the logout response is sent                               | String   | TRUE     |
 
 ```json
 {
@@ -6021,13 +6021,13 @@ Specifies the Single Logout (SLO)  behavior for a Custom SAML application
 }
 ```
 
-### Service Provider Certificate
+### Service Provider certificate
 
-The certificate which the service provider uses to sign Single Logout requests
+The certificate that the Service Provider uses to sign Single Logout requests
 
-| Property | Description                                            | Datatype       | Nullable |
-| -------- | ------------------------------------------------------ | -------------- | -------- |
-| x5c      | A list containing exactly one x509 encoded certificate | List of String | FALSE    |
+| Property | Description                                               | Datatype       | Nullable |
+| -------- | --------------------------------------------------------- | -------------- | -------- |
+| x5c      | A list that contains exactly one x509 encoded certificate | List of String | FALSE    |
 
 ```json
 {
